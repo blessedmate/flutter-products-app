@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 
-class CardContainer extends StatelessWidget {
-  const CardContainer({Key? key, required this.cardContent}) : super(key: key);
+class LoginCardContainer extends StatelessWidget {
+  const LoginCardContainer({Key? key, required this.cardContent})
+      : super(key: key);
 
   final Widget cardContent;
 
