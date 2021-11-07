@@ -120,7 +120,7 @@ class _LoginForm extends StatelessWidget {
               padding: const EdgeInsets.symmetric(horizontal: 80, vertical: 15),
               child: Text(
                 loginForm.isLoading ? '...' : 'Sign in',
-                style: TextStyle(color: Colors.white),
+                style: const TextStyle(color: Colors.white),
               ),
             ),
             onPressed: loginForm.isLoading
@@ -133,7 +133,7 @@ class _LoginForm extends StatelessWidget {
                     } else {
                       loginForm.isLoading = true;
 
-                      await Future.delayed(Duration(seconds: 2));
+                      await Future.delayed(const Duration(seconds: 2));
 
                       // TODO: Login validation
                       loginForm.isLoading = false;

@@ -1,9 +1,33 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_products_app/providers/product_form_provider.dart';
+import 'package:flutter_products_app/services/services.dart';
 import 'package:flutter_products_app/ui/custom_input_decorations.dart';
 import 'package:flutter_products_app/widgets/widgets.dart';
+import 'package:provider/provider.dart';
 
 class ProductDetailScreen extends StatelessWidget {
   const ProductDetailScreen({Key? key}) : super(key: key);
+  @override
+  Widget build(BuildContext context) {
+    final productsService = Provider.of<ProductsService>(context);
+
+    return ChangeNotifierProvider(
+      create: (_) => ProductFormProvider(productsService.selectedProduct!),
+      child: _ProductDetailBody(productsService: productsService),
+    );
+
+    // return _ProductDetailBody(productsService: productsService);
+  }
+}
+
+class _ProductDetailBody extends StatelessWidget {
+  const _ProductDetailBody({
+    Key? key,
+    required this.productsService,
+  }) : super(key: key);
+
+  final ProductsService productsService;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -13,7 +37,8 @@ class ProductDetailScreen extends StatelessWidget {
           children: [
             Stack(
               children: [
-                const ProductImage(),
+                ProductImage(
+                    imageUrl: productsService.selectedProduct!.picture),
                 Positioned(
                   top: 60,
                   left: 20,
@@ -59,6 +84,9 @@ class _ProductForm extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final productFormProvider = Provider.of<ProductFormProvider>(context);
+    final product = productFormProvider.product;
+
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 10),
       child: Container(
@@ -71,24 +99,37 @@ class _ProductForm extends StatelessWidget {
             children: [
               const SizedBox(height: 10),
               TextFormField(
+                initialValue: product.name,
                 decoration: CustomInputDecorations.loginInputDecoration(
                   hintText: 'Product name',
                   labelText: 'Name:',
                 ),
+                onChanged: (value) => product.name = value,
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Name cant be empty';
+                  }
+                },
               ),
               const SizedBox(height: 30),
               TextFormField(
+                initialValue: '${product.price}',
                 keyboardType: TextInputType.number,
                 decoration: CustomInputDecorations.loginInputDecoration(
                   hintText: '\$150',
                   labelText: 'Price:',
                 ),
+                onChanged: (value) {
+                  double.tryParse(value) == null
+                      ? product.price == 0
+                      : product.price = double.parse(value);
+                },
               ),
               const SizedBox(height: 30),
               SwitchListTile.adaptive(
                 title: const Text('Available'),
                 activeColor: Colors.orange[800],
-                value: true,
+                value: product.available,
                 onChanged: (value) {
                   //TODO: Implement
                 },

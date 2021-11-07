@@ -76,12 +76,14 @@ class _BackgroundImage extends StatelessWidget {
       child: SizedBox(
         width: double.infinity,
         height: 400,
-        child: FadeInImage(
-          //TODO: Conditional when theres no image
-          placeholder: const AssetImage('assets/jar-loading.gif'),
-          image: NetworkImage(imageUrl!),
-          fit: BoxFit.contain,
-        ),
+        child: imageUrl == null
+            ? const Image(
+                image: AssetImage('assets/no-image.png'), fit: BoxFit.cover)
+            : FadeInImage(
+                placeholder: const AssetImage('assets/jar-loading.gif'),
+                image: NetworkImage(imageUrl!),
+                fit: BoxFit.contain,
+              ),
       ),
     );
   }

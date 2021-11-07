@@ -23,7 +23,11 @@ class HomeScreen extends StatelessWidget {
         physics: const BouncingScrollPhysics(),
         itemCount: productsList.length,
         itemBuilder: (context, index) => GestureDetector(
-          onTap: () => Navigator.pushNamed(context, 'product'),
+          onTap: () {
+            // Create a copy so the actual product isnt changed until saved
+            productsService.selectedProduct = productsList[index].copy();
+            Navigator.pushNamed(context, 'product');
+          },
           child: ProductCard(product: productsList[index]),
         ),
       ),
