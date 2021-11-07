@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_products_app/providers/product_form_provider.dart';
 import 'package:flutter_products_app/services/services.dart';
 import 'package:flutter_products_app/ui/custom_input_decorations.dart';
@@ -30,8 +31,11 @@ class _ProductDetailBody extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final productFormProvider = Provider.of<ProductFormProvider>(context);
     return Scaffold(
       body: SingleChildScrollView(
+        // Hide keyboard on scroll
+        // keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
         physics: const BouncingScrollPhysics(),
         child: Column(
           children: [
@@ -69,8 +73,11 @@ class _ProductDetailBody extends StatelessWidget {
       floatingActionButtonLocation: FloatingActionButtonLocation.endDocked,
       floatingActionButton: FloatingActionButton(
         child: const Icon(Icons.save_outlined),
-        onPressed: () {
-          //TODO: Save product
+        onPressed: () async {
+          if (!productFormProvider.isValidForm()) return;
+
+          await productsService
+              .saveOrCreateProduct(productFormProvider.product);
         },
       ),
     );
@@ -92,9 +99,10 @@ class _ProductForm extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 20),
         width: double.infinity,
-        height: 270,
         decoration: _buildDecoration(),
         child: Form(
+          key: productFormProvider.formKey,
+          autovalidateMode: AutovalidateMode.onUserInteraction,
           child: Column(
             children: [
               const SizedBox(height: 10),
@@ -119,6 +127,10 @@ class _ProductForm extends StatelessWidget {
                   hintText: '\$150',
                   labelText: 'Price:',
                 ),
+                inputFormatters: [
+                  FilteringTextInputFormatter.allow(
+                      RegExp(r'^(\d+)?\.?\d{0,2}'))
+                ],
                 onChanged: (value) {
                   double.tryParse(value) == null
                       ? product.price == 0
@@ -130,9 +142,8 @@ class _ProductForm extends StatelessWidget {
                 title: const Text('Available'),
                 activeColor: Colors.orange[800],
                 value: product.available,
-                onChanged: (value) {
-                  //TODO: Implement
-                },
+                // Since onChanged emits a bool and update receives one code can be shortened like this
+                onChanged: productFormProvider.updateAvailability,
               ),
               const SizedBox(height: 20),
             ],
