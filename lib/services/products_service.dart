@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_products_app/models/models.dart';
@@ -9,9 +10,10 @@ class ProductsService extends ChangeNotifier {
       'flutter-products-app-63d37-default-rtdb.firebaseio.com';
   final List<Product> products = [];
   Product? selectedProduct;
+  File? newPicture;
 
   bool isLoading = true;
-  bool isSaving = true;
+  bool isSaving = false;
 
   ProductsService() {
     loadProducts();
@@ -72,6 +74,40 @@ class ProductsService extends ChangeNotifier {
     products.add(product);
     notifyListeners();
     return product.id!;
+  }
+
+  void updateSelectedProductImage(String path) {
+    selectedProduct!.picture = path;
+    newPicture = File.fromUri(Uri(path: path));
+
+    notifyListeners();
+  }
+
+  Future<String?> uploadImage() async {
+    if (newPicture == null) {
+      return null;
+    }
+
+    isSaving = true;
+    notifyListeners();
+
+    final url = Uri.parse(
+        'https://api.cloudinary.com/v1_1/dkwnvvjcs/image/upload?upload_preset=yistplbb');
+
+    final imageUploadRequest = http.MultipartRequest('POST', url);
+    final file = await http.MultipartFile.fromPath('file', newPicture!.path);
+    imageUploadRequest.files.add(file);
+
+    final streamedResponse = await imageUploadRequest.send();
+    final response = await http.Response.fromStream(streamedResponse);
+    final body = json.decode(response.body);
+
+    // Image is uploaded, no need to keep this reference
+    newPicture = null;
+    // isSaving = false;
+    // notifyListeners();
+
+    return body['secure_url'];
   }
 
   //TODO: Fetch products

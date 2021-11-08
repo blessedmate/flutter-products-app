@@ -5,6 +5,7 @@ import 'package:flutter_products_app/services/services.dart';
 import 'package:flutter_products_app/ui/custom_input_decorations.dart';
 import 'package:flutter_products_app/widgets/widgets.dart';
 import 'package:provider/provider.dart';
+import 'package:image_picker/image_picker.dart';
 
 class ProductDetailScreen extends StatelessWidget {
   const ProductDetailScreen({Key? key}) : super(key: key);
@@ -52,12 +53,24 @@ class _ProductDetailBody extends StatelessWidget {
                         size: 40, color: Colors.white),
                   ),
                 ),
+
+                // Camera
                 Positioned(
                   top: 60,
                   right: 20,
                   child: IconButton(
-                    onPressed: () {
-                      //TODO: Camera
+                    onPressed: () async {
+                      final picker = ImagePicker();
+                      final XFile? pickedFile = await picker.pickImage(
+                        source: ImageSource.camera,
+                        imageQuality: 100,
+                      );
+
+                      if (pickedFile == null) {
+                        return;
+                      }
+                      productsService
+                          .updateSelectedProductImage(pickedFile.path);
                     },
                     icon: const Icon(Icons.camera_alt_outlined,
                         size: 40, color: Colors.white),
@@ -72,13 +85,22 @@ class _ProductDetailBody extends StatelessWidget {
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.endDocked,
       floatingActionButton: FloatingActionButton(
-        child: const Icon(Icons.save_outlined),
-        onPressed: () async {
-          if (!productFormProvider.isValidForm()) return;
+        child: productsService.isSaving
+            ? const CircularProgressIndicator(color: Colors.white)
+            : const Icon(Icons.save_outlined),
+        onPressed: productsService.isSaving
+            ? null
+            : () async {
+                if (!productFormProvider.isValidForm()) return;
 
-          await productsService
-              .saveOrCreateProduct(productFormProvider.product);
-        },
+                final String? imageUrl = await productsService.uploadImage();
+                if (imageUrl != null) {
+                  productFormProvider.product.picture = imageUrl;
+                }
+
+                await productsService
+                    .saveOrCreateProduct(productFormProvider.product);
+              },
       ),
     );
   }
