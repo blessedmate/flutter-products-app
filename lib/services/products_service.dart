@@ -43,22 +43,35 @@ class ProductsService extends ChangeNotifier {
 
     if (product.id == null) {
       // POST
+      createProduct(product);
     } else {
       // PUT
-      putProduct(product);
+      updateProduct(product);
     }
 
     isSaving = false;
     notifyListeners();
   }
 
-  Future<String> putProduct(Product product) async {
+  Future<String> updateProduct(Product product) async {
     final url = Uri.https(_urlBase, 'products/${product.id}.json');
-    final response = await http.put(url, body: product.toJson());
+    await http.put(url, body: product.toJson());
+    final index = products.indexWhere((element) => element.id == product.id);
+    products[index] = product;
+    notifyListeners();
+    return product.id!;
+  }
 
-    print(response.body);
-    // TODO: Update products list
-    return '';
+  Future<String> createProduct(Product product) async {
+    final url = Uri.https(_urlBase, 'products.json');
+    final response = await http.post(url, body: product.toJson());
+    final body = json.decode(response.body);
+
+    product.id = body['name'];
+
+    products.add(product);
+    notifyListeners();
+    return product.id!;
   }
 
   //TODO: Fetch products
