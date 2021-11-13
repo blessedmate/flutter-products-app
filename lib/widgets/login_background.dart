@@ -55,8 +55,8 @@ class _PurpleBox extends StatelessWidget {
       decoration: const BoxDecoration(
         gradient: LinearGradient(
           colors: [
-            Color.fromRGBO(63, 63, 156, 1),
-            Color.fromRGBO(90, 70, 178, 1),
+            Color.fromRGBO(255, 138, 28, 1),
+            Color.fromRGBO(255, 160, 71, 1),
           ],
         ),
       ),
@@ -83,7 +83,7 @@ class _Bubble extends StatelessWidget {
       height: 100,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(100),
-        color: const Color.fromRGBO(255, 255, 155, 0.05),
+        color: const Color.fromRGBO(255, 255, 155, 0.1),
       ),
     );
   }

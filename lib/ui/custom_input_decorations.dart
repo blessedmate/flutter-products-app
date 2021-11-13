@@ -9,11 +9,11 @@ class CustomInputDecorations {
     return InputDecoration(
       enabledBorder: const UnderlineInputBorder(
         borderSide: BorderSide(
-          color: Colors.deepPurple,
+          color: Colors.orange,
         ),
       ),
       focusedBorder: const UnderlineInputBorder(
-        borderSide: BorderSide(color: Colors.deepPurple, width: 2),
+        borderSide: BorderSide(color: Colors.orange, width: 2),
       ),
       hintText: hintText,
       labelText: labelText,
@@ -21,7 +21,7 @@ class CustomInputDecorations {
         color: Colors.grey,
       ),
       prefixIcon: prefixIcon != null
-          ? Icon(prefixIcon, color: Colors.deepPurple)
+          ? Icon(prefixIcon, color: Colors.orange[700])
           : null,
     );
   }

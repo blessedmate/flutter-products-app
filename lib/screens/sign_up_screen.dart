@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_products_app/providers/login_form_provider.dart';
+import 'package:flutter_products_app/services/services.dart';
 import 'package:flutter_products_app/ui/custom_input_decorations.dart';
 import 'package:flutter_products_app/widgets/widgets.dart';
 import 'package:provider/provider.dart';
 
-class LoginScreen extends StatelessWidget {
-  const LoginScreen({Key? key}) : super(key: key);
+class SignUpScreen extends StatelessWidget {
+  const SignUpScreen({Key? key}) : super(key: key);
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
@@ -36,7 +37,7 @@ class _LogInBox extends StatelessWidget {
               children: [
                 const SizedBox(height: 10),
                 Text(
-                  'Login',
+                  'Register',
                   style: Theme.of(context).textTheme.headline4,
                 ),
                 const SizedBox(height: 30),
@@ -52,9 +53,9 @@ class _LogInBox extends StatelessWidget {
           ),
           const SizedBox(height: 50),
           TextButton(
-            onPressed: () => Navigator.pushReplacementNamed(context, 'sign-up'),
+            onPressed: () => Navigator.pushReplacementNamed(context, 'login'),
             child: const Text(
-              'Create a new account',
+              'Already have an account?',
               style: TextStyle(fontSize: 18),
             ),
             style: ButtonStyle(
@@ -130,7 +131,7 @@ class _LoginForm extends StatelessWidget {
             child: Container(
               padding: const EdgeInsets.symmetric(horizontal: 80, vertical: 15),
               child: Text(
-                loginForm.isLoading ? '...' : 'Sign in',
+                loginForm.isLoading ? '...' : 'Sign up',
                 style: const TextStyle(color: Colors.white),
               ),
             ),
@@ -143,13 +144,21 @@ class _LoginForm extends StatelessWidget {
                       return;
                     } else {
                       loginForm.isLoading = true;
+                      final authService =
+                          Provider.of<AuthService>(context, listen: false);
 
                       await Future.delayed(const Duration(seconds: 2));
 
                       // TODO: Login validation
-                      loginForm.isLoading = false;
+                      final String? errorMsg = await authService.createUser(
+                          loginForm.email, loginForm.password);
 
-                      Navigator.pushReplacementNamed(context, 'home');
+                      if (errorMsg == null) {
+                        Navigator.pushReplacementNamed(context, 'home');
+                      } else {
+                        print(errorMsg);
+                      }
+                      loginForm.isLoading = false;
                     }
                   },
           )
