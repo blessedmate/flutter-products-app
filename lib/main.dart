@@ -28,11 +28,13 @@ class MyApp extends StatelessWidget {
       title: 'Products App',
       initialRoute: 'login',
       routes: {
+        'check-auth': (_) => const CheckAuthScreen(),
         'login': (_) => const LoginScreen(),
         'sign-up': (_) => const SignUpScreen(),
         'home': (_) => const HomeScreen(),
         'product': (_) => const ProductDetailScreen(),
       },
+      scaffoldMessengerKey: AlertsService.messengerKey,
       theme: ThemeData.light().copyWith(
         scaffoldBackgroundColor: Colors.grey[300],
         appBarTheme: AppBarTheme(elevation: 0, color: Colors.orange[800]),

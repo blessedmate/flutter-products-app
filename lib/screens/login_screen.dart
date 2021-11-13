@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_products_app/providers/login_form_provider.dart';
+import 'package:flutter_products_app/services/services.dart';
 import 'package:flutter_products_app/ui/custom_input_decorations.dart';
 import 'package:flutter_products_app/widgets/widgets.dart';
 import 'package:provider/provider.dart';
@@ -143,13 +144,18 @@ class _LoginForm extends StatelessWidget {
                       return;
                     } else {
                       loginForm.isLoading = true;
+                      final authService =
+                          Provider.of<AuthService>(context, listen: false);
 
-                      await Future.delayed(const Duration(seconds: 2));
-
-                      // TODO: Login validation
+                      // Login
+                      final String? errorMsg = await authService.login(
+                          loginForm.email, loginForm.password);
+                      if (errorMsg == null) {
+                        Navigator.pushReplacementNamed(context, 'home');
+                      } else {
+                        AlertsService.showSnackBar('Wrong email or password');
+                      }
                       loginForm.isLoading = false;
-
-                      Navigator.pushReplacementNamed(context, 'home');
                     }
                   },
           )

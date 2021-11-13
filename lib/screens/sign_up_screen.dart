@@ -147,16 +147,16 @@ class _LoginForm extends StatelessWidget {
                       final authService =
                           Provider.of<AuthService>(context, listen: false);
 
-                      await Future.delayed(const Duration(seconds: 2));
-
-                      // TODO: Login validation
+                      // Create User
                       final String? errorMsg = await authService.createUser(
                           loginForm.email, loginForm.password);
-
                       if (errorMsg == null) {
                         Navigator.pushReplacementNamed(context, 'home');
                       } else {
-                        print(errorMsg);
+                        if (errorMsg == 'EMAIL_EXISTS') {
+                          AlertsService.showSnackBar(
+                              'Email already registered');
+                        }
                       }
                       loginForm.isLoading = false;
                     }
