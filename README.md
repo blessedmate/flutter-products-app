@@ -10,6 +10,8 @@ After authenticating, the user can manage a list of products for sale that are s
 
 Users can add new products by tapping on the (+) button. Each product must have a name and price, and the picture can be added anytime.
 
+This application implements Provider as a state manager.
+
 ## Implemented packages
 
 Some of the most important packages used to build this app are:
