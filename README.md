@@ -1,16 +1,20 @@
-# flutter_products_app
+# Products App
 
-A new Flutter project.
+A Flutter mobile app that simulates a marketplace, displaying a list of products for sale with prices. It connects to several Firebase services for different functionalities.
 
-## Getting Started
+## Description
 
-This project is a starting point for a Flutter application.
+This application uses Firebase services for authentication, and the token is stored locally using Shared Preferences.
 
-A few resources to get you started if this is your first Flutter project:
+After authenticating, the user can manage a list of products for sale that are stored using Firebase Realtime Database. The product description includes a name, image, price and availability status.
 
-- [Lab: Write your first Flutter app](https://flutter.dev/docs/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://flutter.dev/docs/cookbook)
+Users can add new products by tapping on the (+) button. Each product must have a name and price, and the picture can be added anytime.
 
-For help getting started with Flutter, view our
-[online documentation](https://flutter.dev/docs), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+## Implemented packages
+
+Some of the most important packages used to build this app are:
+
+ - flutter_secure_storage: ^4.2.1
+ - http: ^0.13.4
+ - image_picker: ^0.8.4+4
+ - provider: ^6.0.1
